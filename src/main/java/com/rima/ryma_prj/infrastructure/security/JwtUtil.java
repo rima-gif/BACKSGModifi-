@@ -15,6 +15,7 @@ import java.util.Optional;
 @Component
 public class JwtUtil {
 
+
     private final Key key;
     private final long expirationTime;
     @Value("${jwt.reset-password.expiration}")
@@ -22,6 +23,7 @@ public class JwtUtil {
     // Injection des valeurs depuis application.properties
     public JwtUtil(@Value("${jwt.secret}") String secret,
                    @Value("${jwt.expiration}") long expiration) {
+
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationTime = expiration;
     }
@@ -65,3 +67,6 @@ public class JwtUtil {
     }
 
 }
+
+
+

@@ -57,20 +57,24 @@ public class AuthService {
 
     public Map<String, Object> signin(String email, String password) {
         Map<String, Object> response = new HashMap<>();
+        System.out.println("Tentative de connexion avec email: " + email);
 
         User user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null) {
+            System.out.println("Utilisateur non trouvé.");
             response.put("error", "Email or password is incorrect");
             return response;
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
+            System.out.println("Mot de passe incorrect.");
             response.put("error", "Email or password is incorrect");
             return response;
         }
 
         String token = jwtUtil.generateToken(user);
+        System.out.println("Token généré: " + token);
 
         response.put("token", token);
         response.put("id", user.getId());
@@ -79,6 +83,7 @@ public class AuthService {
 
         return response;
     }
+
 
 
     // public void forgotPassword(String email) {

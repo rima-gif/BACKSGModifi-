@@ -45,6 +45,8 @@ public class AuthController {
                 "name", result.get("name"),
                 "id", result.get("id")
         ));
+
+
         //return ResponseEntity.ok(result);
     }
 
