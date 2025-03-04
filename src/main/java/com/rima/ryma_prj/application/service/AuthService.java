@@ -74,7 +74,7 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(user);
-        System.out.println("Token généré: " + token);
+        //System.out.println("Token généré: " + token);
 
         response.put("token", token);
         response.put("id", user.getId());
@@ -86,14 +86,7 @@ public class AuthService {
 
 
 
-    // public void forgotPassword(String email) {
-    //     User user = userRepository.findByEmail(email)
-    //          .orElseThrow(() -> new RuntimeException("User not found"));
 
-    // String resetToken = jwtUtil.generatePasswordResetToken(email);
-    //TODO: Envoyer le token par email à l'utilisateur
-    //System.out.println("Reset token for " + email + ": " + resetToken);
-    //}
 
     public ResponseEntity<Map<String, Object>> forgotPassword(String email) {
         Map<String, Object> response = new HashMap<>();

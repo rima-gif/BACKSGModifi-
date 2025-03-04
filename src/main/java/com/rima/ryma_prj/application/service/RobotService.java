@@ -2,32 +2,47 @@ package com.rima.ryma_prj.application.service;
 
 import com.rima.ryma_prj.domain.model.Robot;
 import com.rima.ryma_prj.domain.repository.RobotRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class RobotService {
-    @Autowired
-    private RobotRepository robotRepository;
 
-    public List<Robot> getAllRobts(){
-        return robotRepository.findAll();    }
-    public Optional<Robot> getRobotById(Long id){
+    private final RobotRepository robotRepository;
+
+
+    public RobotService(RobotRepository robotRepository) {
+
+        this.robotRepository = robotRepository;
+    }
+
+    public List<Robot> getAllRobots() {
+       return robotRepository.findAll();
+    }
+
+    public Optional<Robot> getRobotById(Long id) {
+
         return robotRepository.findById(id);
     }
-    public Robot addRobot (Robot robot){
-        return robotRepository.save(robot);
-    }
-    public Robot updateRobot(Long id,Robot robotDetails){
+
+
+    public Robot updateRobot(Long id, Robot robotDetails) {
         return robotRepository.findById(id).map(robot -> {
             robot.setName(robotDetails.getName());
             robot.setStatus(robotDetails.getStatus());
             return robotRepository.save(robot);
-        }).orElseThrow(()-> new RuntimeException("Robot non trouvé"));
+        }).orElseThrow(() -> new RuntimeException("Robot non trouvé"));
     }
-    public void delete(Long id ){
+
+
+    public Robot addRobot(Robot robot) {
+        return robotRepository.save(robot);
+    }
+
+    public void deleteRobot(Long id) {
         robotRepository.deleteById(id);
+
+
     }
 }

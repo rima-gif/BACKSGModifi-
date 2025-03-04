@@ -24,7 +24,7 @@ public class RymaPrjApplication {
             if (userRepository.findByEmail("superadmin@gmail.com").isEmpty()) {
                 User superAdmin = new User();
                 superAdmin.setEmail("superadmin@gmail.com");
-                superAdmin.setPassword(passwordEncoder.encode("12345678"));
+                superAdmin.setPassword(passwordEncoder.encode("Super@Admin623"));
 
                 superAdmin.setUsername("superadmin");
                 superAdmin.setRoles(Collections.singleton(Role.ROLE_SUPER_ADMIN));

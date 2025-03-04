@@ -52,10 +52,7 @@ public class AuthController {
 
 
 
-    //@PostMapping("/forgot-password")
-    //public void forgotPassword(@RequestParam String email) {
-      //  authService.forgotPassword(email);
-    //}
+
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, Object>> forgotPassword(@RequestBody Map<String, String> payload) {
@@ -82,9 +79,5 @@ public class AuthController {
 
 
 
-    //@PostMapping("/forgot-password")
-    //public void forgotPassword(@RequestParam String email) {
-    //  authService.forgotPassword(email);
-    //}
 }
 
