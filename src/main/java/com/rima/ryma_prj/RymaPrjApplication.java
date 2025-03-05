@@ -29,6 +29,7 @@ public class RymaPrjApplication {
                 superAdmin.setUsername("superadmin");
                 superAdmin.setRoles(Collections.singleton(Role.ROLE_SUPER_ADMIN));
 
+
                 // Correct way to assign the role:
 
                 userRepository.save(superAdmin);

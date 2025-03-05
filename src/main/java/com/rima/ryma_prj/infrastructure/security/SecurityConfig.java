@@ -45,6 +45,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/signin", "/auth/signup", "/auth/forgot-password", "/auth/reset-password").permitAll() // ✅ Autoriser l'inscription
                         .requestMatchers("/robots/add").hasAnyAuthority("ROLE_SUPER_ADMIN") // ✅ Utilisez hasAnyAuthority
+                        .requestMatchers("/robots/delete/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers("/robots/update/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers("/robots/all","/robots/{id}","/robots/name/{name}").permitAll()
+
                         .anyRequest()
                         .authenticated()
                 )

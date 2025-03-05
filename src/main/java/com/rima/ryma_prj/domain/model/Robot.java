@@ -17,8 +17,13 @@ public class Robot {
     @Column(unique = true , nullable = false)
     private String name ;
     @Enumerated(EnumType.STRING) //pour stocker le status sous forme de chaine dans la BD
-    private  RobotStatus status ;
+    private RobotStatus status = RobotStatus.DISCONNECTED; // Valeur par défaut
 
+    // Constructeur avec le nom seulement
+    public Robot(String name) {
+        this.name = name;
+        this.status = RobotStatus.DISCONNECTED; // Par défaut si non fourni
+    }
     public Long getId() {
         return id;
     }
