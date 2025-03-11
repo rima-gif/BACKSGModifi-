@@ -12,7 +12,7 @@ public class machine {
     private String name ;
 
     @OneToOne
-    @JoinColumn(name ="radio_frequency_id",referencedColumnName = "id" ,unique=true)
+    @JoinColumn(name ="radio_frequency_id", referencedColumnName = "id", unique = true, nullable = true)
 
     private RadioFrequency radioFrequency;
     public machine(){}

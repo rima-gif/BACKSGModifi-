@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.List;
 
 @Configuration
@@ -26,6 +25,8 @@ public class SecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final JwtRequestFilter jwtRequestFilter; // Injection du filtre JWT
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -41,19 +42,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Applique le CORS
-                .csrf(csrf -> csrf.disable()) // Désactive CSRF (à activer avec un token en prod)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/signin", "/auth/signup", "/auth/forgot-password", "/auth/reset-password").permitAll() // ✅ Autoriser l'inscription
+                        .requestMatchers("/auth/**").permitAll() // ✅ Autoriser l'inscription
                         .requestMatchers("/robots/add").hasAnyAuthority("ROLE_SUPER_ADMIN") // ✅ Utilisez hasAnyAuthority
                         .requestMatchers("/robots/delete/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
                         .requestMatchers("/robots/update/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
                         .requestMatchers("/robots/all","/robots/{id}","/robots/name/{name}").permitAll()
+                        .requestMatchers("/machines/create","/machines/update/{id}","/machines/delete/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers("/machines/{id}","/machines/all").permitAll()
+                        .requestMatchers("/radio-frequency/Add","/radio-frequency/update/{id}","/radio-frequency/delete/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers("/radio-frequency/all","/radio-frequency/{id}").permitAll()
+
 
                         .anyRequest()
                         .authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ Empêche la gestion de session côté serveur
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Utilisez le champ jwtRequestFilter
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // ✅ Empêche la gestion de session côté serveur
+                 http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Utilisez le champ jwtRequestFilter
 
         return http.build();
     }

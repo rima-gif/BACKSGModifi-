@@ -14,6 +14,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/robots")
+@CrossOrigin(origins = "http://localhost:4200")
+
 
 public class RobotController {
     private final RobotService robotService;
@@ -67,7 +69,7 @@ public class RobotController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Robot> getRobotById(@PathVariable Long id) {
+    public ResponseEntity<Robot>     getRobotById(@PathVariable Long id) {
         return robotService.getRobotById(id)
                 .map(ResponseEntity::ok) // 200 OK si trouvé
                 .orElseGet(() -> ResponseEntity.notFound().build()); // 404 Not Found si non trouvé

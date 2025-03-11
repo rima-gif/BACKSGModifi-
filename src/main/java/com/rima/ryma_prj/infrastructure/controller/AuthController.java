@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:4200") // Remplacez par l'URL de votre application Angular
 
 public class AuthController {
 
