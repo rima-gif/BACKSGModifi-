@@ -22,33 +22,17 @@ public class AuthController {
         String email = payload.get("email");
         String password = payload.get("password");
 
-        System.out.println("🔹 Requête reçue pour signup avec : " + email);
+        System.out.println(" Requête reçue pour signup avec : " + email);
         return authService.signup(username, email, password);
     }
-
 
     @PostMapping("/signin")
     public ResponseEntity<Map<String, Object>> signin(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         String password = payload.get("password");
 
-        Map<String, Object> result = authService.signin(email, password);
-
-        if (result.containsKey("error")) {
-            return ResponseEntity.status(401).body(Map.of("status", "error", "message", result.get("error")));
-        }
-        return ResponseEntity.ok(Map.of(
-                "status", "success",
-                "token", result.get("token"),
-                "role", result.get("role"),
-                "name", result.get("name"),
-                "id", result.get("id")
-        ));
-
-
-        //return ResponseEntity.ok(result);
+        return authService.signin(email, password);
     }
-
 
 
 

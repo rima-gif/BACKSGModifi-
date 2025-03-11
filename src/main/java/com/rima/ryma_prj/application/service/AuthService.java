@@ -55,33 +55,32 @@ public class AuthService {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    public Map<String, Object> signin(String email, String password) {
+    public ResponseEntity<Map<String, Object>> signin(String email, String password) {
         Map<String, Object> response = new HashMap<>();
-        System.out.println("Tentative de connexion avec email: " + email);
+        System.out.println("Attempting sign-in with email: " + email);
 
         User user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null) {
-            System.out.println("Utilisateur non trouvé.");
+            System.out.println("User not found.");
             response.put("error", "Email or password is incorrect");
-            return response;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            System.out.println("Mot de passe incorrect.");
+            System.out.println("Incorrect password.");
             response.put("error", "Email or password is incorrect");
-            return response;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
         String token = jwtUtil.generateToken(user);
-        //System.out.println("Token généré: " + token);
 
         response.put("token", token);
         response.put("id", user.getId());
         response.put("name", user.getUsername());
         response.put("role", user.getRole());
 
-        return response;
+        return ResponseEntity.ok(response);
     }
 
 

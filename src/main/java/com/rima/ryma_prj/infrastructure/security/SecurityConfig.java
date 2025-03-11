@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import java.util.List;
 
 @Configuration
@@ -25,8 +26,6 @@ public class SecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final JwtRequestFilter jwtRequestFilter; // Injection du filtre JWT
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,36 +39,36 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("Configuring security filter chain...");
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Applique le CORS
+                .csrf().disable()  // Disable CSRF protection for stateless API
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Enable CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // ✅ Autoriser l'inscription
-                        .requestMatchers("/robots/add").hasAnyAuthority("ROLE_SUPER_ADMIN") // ✅ Utilisez hasAnyAuthority
-                        .requestMatchers("/robots/delete/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
-                        .requestMatchers("/robots/update/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
-                        .requestMatchers("/robots/all","/robots/{id}","/robots/name/{name}").permitAll()
-                        .requestMatchers("/machines/create","/machines/update/{id}","/machines/delete/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
-                        .requestMatchers("/machines/{id}","/machines/all").permitAll()
-                        .requestMatchers("/radio-frequency/Add","/radio-frequency/update/{id}","/radio-frequency/delete/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN")
-                        .requestMatchers("/radio-frequency/all","/radio-frequency/{id}").permitAll()
-
-
-                        .anyRequest()
-                        .authenticated()
+                        .requestMatchers("/auth/signup", "/auth/signin", "/auth/forgot-password", "/auth/reset-password").permitAll()
+                        .requestMatchers("/robots/add").hasAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers("/robots/delete/{id}").hasAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers("/robots/update/{id}").hasAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers("/robots/all", "/robots/{id}", "/robots/name/{name}").permitAll()
+                        .requestMatchers("/machines/create", "/machines/update/{id}", "/machines/delete/{id}").hasAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers("/machines/{id}", "/machines/all").permitAll()
+                        .requestMatchers("/radio-frequency/Add", "/radio-frequency/update/{id}", "/radio-frequency/delete/{id}").hasAuthority("ROLE_SUPER_ADMIN")
+                        .requestMatchers("/radio-frequency/all", "/radio-frequency/{id}").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // ✅ Empêche la gestion de session côté serveur
-                 http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Utilisez le champ jwtRequestFilter
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Stateless
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);  // Add JWT filter
 
+        log.info("Security filter chain configured.");
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // ✅ Autorise le frontend Angular
+        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Ensure correct frontend origin
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // ✅ Permet d'envoyer des cookies et des sessions
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
